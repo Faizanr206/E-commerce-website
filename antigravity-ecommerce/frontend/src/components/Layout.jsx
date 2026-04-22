@@ -3,14 +3,14 @@ import GlowNavbar from './GlowNavbar';
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
       <GlowNavbar />
-      <main className="pt-20 pb-10 px-4 container mx-auto">
+      <main className="flex-1 pt-28 pb-16 px-4 w-full">
         {children}
       </main>
-      <footer className="py-10 border-t border-glass-border">
-        <div className="container mx-auto px-4 text-center text-muted text-sm">
-          <p>© 2026 ANTIGRAVITY E-Commerce. Defying the status quo.</p>
+      <footer className="py-12 border-t border-[var(--border-color)] mt-auto">
+        <div className="container mx-auto px-6 text-center text-[var(--muted)] text-sm font-medium">
+          <p>© 2026 LittleLegends. Designed with minimalist aesthetics.</p>
         </div>
       </footer>
     </div>

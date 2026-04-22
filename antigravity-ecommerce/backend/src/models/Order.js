@@ -18,6 +18,10 @@ const orderSchema = new mongoose.Schema(
           ref: 'Product',
           required: true,
         },
+        selectedOptions: {
+          type: mongoose.Schema.Types.Mixed,
+          default: {}
+        },
       },
     ],
     shippingAddress: {

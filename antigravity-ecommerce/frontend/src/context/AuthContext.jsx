@@ -61,6 +61,40 @@ export const AuthProvider = ({ children }) => {
 
   const isAdmin = user && user.role === 'admin';
 
+  // 1-Hour Auto Logout Logic based on user inactivity
+  useEffect(() => {
+    let inactivityTimer;
+
+    const resetTimer = () => {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      // Set to 1 hour (3600000 ms)
+      inactivityTimer = setTimeout(() => {
+        if (user) {
+          logout().then(() => {
+            window.location.href = '/login';
+          });
+        }
+      }, 3600000); // 1 hour
+    };
+
+    if (user) {
+      // Activity events to listen to
+      const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+      
+      const handleActivity = () => {
+        resetTimer();
+      };
+
+      events.forEach(event => document.addEventListener(event, handleActivity));
+      resetTimer(); // Start the timer initially
+
+      return () => {
+        if (inactivityTimer) clearTimeout(inactivityTimer);
+        events.forEach(event => document.removeEventListener(event, handleActivity));
+      };
+    }
+  }, [user]);
+
   return (
     <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, isAdmin, loading }}>
       {children}

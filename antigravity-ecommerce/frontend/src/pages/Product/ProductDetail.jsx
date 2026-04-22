@@ -64,22 +64,24 @@ const ProductDetail = () => {
   }).format(product.basePrice);
 
   return (
-    <div className="py-10 max-w-6xl mx-auto px-4">
-      <Link to="/" className="inline-flex items-center gap-2 mb-10 text-muted hover:text-accent transition-colors font-bold uppercase tracking-widest text-xs">
-        <ArrowLeft size={16} /> Return to Home
-      </Link>
+    <div className="py-24 max-w-7xl mx-auto px-6">
+      <div className="mb-12">
+        <Link to="/" className="inline-flex items-center gap-2 text-[var(--muted)] hover:text-[var(--text)] transition-colors font-semibold text-sm">
+          <ArrowLeft size={16} strokeWidth={2} /> Back to Products
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
         <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="flex flex-col gap-6">
-          <div className="glass rounded-[2rem] overflow-hidden aspect-square border border-glass-border">
-            <img src={product.images[selectedImage]?.url || product.images[0]?.url} alt={product.name} className="w-full h-full object-cover animate-float-slow transition-all duration-500" />
+          <div className="soft-card overflow-hidden aspect-square border border-[var(--border-color)]">
+            <img src={product.images[selectedImage]?.url || product.images[0]?.url} alt={product.name} className="w-full h-full object-cover transition-all duration-500" />
           </div>
           <div className="flex flex-wrap gap-4">
             {product.images.map((img, i) => (
               <div 
                 key={i} 
                 onClick={() => setSelectedImage(i)}
-                className={`w-24 h-24 rounded-2xl glass border-glass-border overflow-hidden cursor-pointer hover:border-accent transition-all ${selectedImage === i ? 'border-accent ring-2 ring-accent/20' : ''}`}
+                className={`w-24 h-24 rounded-2xl overflow-hidden cursor-pointer border-2 transition-all ${selectedImage === i ? 'border-[var(--text)]' : 'border-transparent hover:border-[var(--muted)]'}`}
               >
                 <img src={img.url} className="w-full h-full object-cover" />
               </div>
@@ -87,59 +89,38 @@ const ProductDetail = () => {
           </div>
         </motion.div>
 
-        <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="flex flex-col gap-8">
-          <h1 
-            className="text-5xl font-black uppercase tracking-tighter leading-tight bg-clip-text text-transparent"
-            style={{
-              backgroundImage: `linear-gradient(to right, var(--gradient-from), var(--gradient-via), var(--gradient-to))`
-            }}
-          >
+        <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="flex flex-col gap-6">
+          <h1 className="text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--text)] leading-tight">
             {product.name}
           </h1>
           
           <div className="flex items-center gap-4">
              <StarRating rating={product.averageRating} />
-             <span className="text-muted text-sm font-bold uppercase tracking-widest border-l border-glass-border pl-4">
-                {product.numReviews} LEGEND STORIES
+             <span className="text-[var(--muted)] text-sm font-semibold border-l border-[var(--border-color)] pl-4">
+                {product.numReviews} Reviews
              </span>
           </div>
 
-          <p className="text-xl text-muted leading-relaxed">
+          <div className="text-3xl font-bold text-[var(--text)]">{formattedPrice}</div>
+
+          <p className="text-lg text-[var(--muted)] leading-relaxed mt-2 mb-4">
             {product.description}
           </p>
 
-          <div className="text-5xl font-black text-accent">{formattedPrice}</div>
-
-          <div className="h-px bg-glass-border" />
+          <div className="h-px w-full bg-[var(--border-color)] my-2" />
 
           {product.options?.map((opt) => (
             <div key={opt.name}>
-              <h3 className="text-sm font-black uppercase tracking-widest text-muted mb-4">{opt.name}</h3>
-              <div className="flex flex-wrap gap-3">
+              <h3 className="text-sm font-bold text-[var(--text)] mb-3">{opt.name}</h3>
+              <div className="flex flex-wrap gap-3 mb-6">
                 {opt.values.map(val => {
                   const isColor = opt.name.toLowerCase() === 'color';
-                  // Simple color map for the dot
-                  const colorMap = {
-                    'honey brown': '#a16207',
-                    'cloud white': '#f8fafc',
-                    'sky blue': '#0ea5e9',
-                    'natural pine': '#d4d4d8',
-                    'smooth walnut': '#451a03',
-                  };
-                  const dotColor = colorMap[val.toLowerCase()] || val.toLowerCase();
-
                   return (
                     <button 
                       key={val} 
                       onClick={() => setSelectedOptions({ ...selectedOptions, [opt.name]: val })}
-                      className={`px-6 py-3 rounded-xl border-2 font-bold transition-all flex items-center gap-3 ${selectedOptions[opt.name] === val ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' : 'glass border-glass-border hover:border-accent text-text'}`}
+                      className={`px-5 py-2.5 rounded-full border text-sm font-semibold transition-all flex items-center gap-2 ${selectedOptions[opt.name] === val ? 'bg-[var(--text)] text-[var(--bg)] border-[var(--text)]' : 'bg-transparent text-[var(--text)] border-[var(--border-color)] hover:border-[var(--text)]'}`}
                     >
-                      {isColor && (
-                        <span 
-                          className="w-4 h-4 rounded-full border border-black/10 shadow-sm" 
-                          style={{ backgroundColor: dotColor }}
-                        />
-                      )}
                       {val}
                     </button>
                   );
@@ -148,20 +129,20 @@ const ProductDetail = () => {
             </div>
           ))}
 
-          <div className="flex items-center gap-6 mt-4">
-            <div className="flex items-center gap-4 bg-bg px-4 py-3 rounded-2xl border border-glass-border">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
+            <div className="flex items-center justify-between w-full sm:w-auto bg-[var(--bg)] px-4 py-3 rounded-full border border-[var(--border-color)]">
               <button 
                 onClick={() => setQty(Math.max(1, qty - 1))}
-                className="hover:text-accent transition-colors"
+                className="hover:text-[var(--text)] text-[var(--muted)] transition-colors p-1"
               >
-                <Minus size={24} />
+                <Minus size={20} />
               </button>
-              <span className="w-12 text-center text-xl font-bold">{qty}</span>
+              <span className="w-12 text-center text-lg font-bold">{qty}</span>
               <button 
                 onClick={() => setQty(qty + 1)}
-                className="hover:text-accent transition-colors"
+                className="hover:text-[var(--text)] text-[var(--muted)] transition-colors p-1"
               >
-                <Plus size={24} />
+                <Plus size={20} />
               </button>
             </div>
 
@@ -189,14 +170,13 @@ const ProductDetail = () => {
                 }
               }}
               disabled={cartLoading}
-              className="flex-1 bg-accent text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-accent/20 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-60"
+              className="w-full sm:flex-1 pill-btn whitespace-nowrap"
             >
               {cartLoading ? 'Adding...' : 'Add to Basket'}
-              <ShoppingCart size={24} />
             </button>
           </div>
           {cartMsg && (
-            <p className={`text-sm font-bold uppercase tracking-widest text-center py-2 ${cartMsg.startsWith('✓') ? 'text-green-500' : 'text-red-500'}`}>
+            <p className={`text-sm font-semibold text-center mt-2 ${cartMsg.startsWith('✓') ? 'text-green-500' : 'text-red-500'}`}>
               {cartMsg}
             </p>
           )}
@@ -204,16 +184,16 @@ const ProductDetail = () => {
       </div>
 
       {/* Reviews Section */}
-      <section className="mt-32">
-        <h2 className="text-4xl font-black uppercase tracking-tighter mb-12 flex items-center gap-4">
-          Adventure Logs
+      <section className="mt-24 pt-16 border-t border-[var(--border-color)]">
+        <h2 className="text-3xl font-extrabold mb-12">
+          Customer Reviews
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-10">
-          <div className="lg:col-span-2 space-y-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          <div className="lg:col-span-2 space-y-8">
             {product.reviews.length === 0 ? (
-              <div className="py-10 text-muted italic font-medium opacity-50 uppercase tracking-widest">
-                No telemetry received yet.
+              <div className="py-8 text-[var(--muted)] font-medium text-lg">
+                No reviews yet. Be the first to review this product.
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6">
@@ -223,19 +203,19 @@ const ProductDetail = () => {
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
-                    className="glass p-8 rounded-3xl animate-float relative overflow-hidden"
+                    className="soft-card p-8 relative overflow-hidden"
                   >
-                    <Quote className="absolute top-4 right-4 text-accent/5" size={80} />
-                    <div className="flex justify-between items-start mb-6">
+                    <Quote className="absolute top-6 right-6 text-[var(--border-color)]" size={48} />
+                    <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h4 className="font-black uppercase tracking-widest text-lg">{rev.name}</h4>
-                        <p className="text-xs text-muted font-bold mt-1 uppercase">
-                          Report Field: {new Date(rev.createdAt).toLocaleDateString()}
+                        <h4 className="font-bold text-lg">{rev.name}</h4>
+                        <p className="text-sm text-[var(--muted)] mt-1">
+                          {new Date(rev.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       <StarRating rating={rev.rating} />
                     </div>
-                    <p className="text-muted leading-relaxed relative z-10 italic">
+                    <p className="text-[var(--muted)] leading-relaxed relative z-10">
                       "{rev.comment}"
                     </p>
                   </motion.div>
@@ -245,16 +225,16 @@ const ProductDetail = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="glass p-8 rounded-3xl sticky top-24">
-              <h3 className="text-xl font-black uppercase tracking-tighter mb-6">File New Report</h3>
+            <div className="soft-card p-8 sticky top-28">
+              <h3 className="text-xl font-bold mb-6">Write a Review</h3>
               
               {!user ? (
-                <div className="p-6 bg-accent/5 rounded-2xl border border-accent/20 text-center">
-                  <p className="text-muted mb-4 font-medium uppercase tracking-widest text-xs">
-                    Access Denied
+                <div className="text-center">
+                  <p className="text-[var(--muted)] mb-4 text-sm">
+                    You must be logged in to write a review.
                   </p>
-                  <Link to="/login" className="text-accent font-bold hover:underline">
-                    Login to Submit Telemetry
+                  <Link to="/login" className="text-[var(--text)] font-semibold underline underline-offset-4 decoration-2">
+                    Login to Submit Reivew
                   </Link>
                 </div>
               ) : (
@@ -267,16 +247,16 @@ const ProductDetail = () => {
                   )}
                   
                   <div>
-                    <label className="block text-xs font-black uppercase tracking-[0.2em] text-muted mb-3">Rating</label>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">Rating</label>
                     <StarRating rating={rating} setRating={setRating} interactive />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black uppercase tracking-[0.2em] text-muted mb-3">Comment (10+ Chars)</label>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">Comment</label>
                     <textarea
                       required
-                      placeholder="Share your weightless experience..."
-                      className="w-full bg-bg/50 border border-glass-border rounded-2xl p-4 min-h-[120px] focus:ring-2 focus:ring-accent outline-none"
+                      placeholder="Share your experience..."
+                      className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl p-4 min-h-[120px] focus:ring-2 focus:ring-[var(--text)] outline-none transition-all"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                     />
@@ -285,12 +265,12 @@ const ProductDetail = () => {
                   <button
                     type="submit"
                     disabled={reviewLoading}
-                    className="w-full bg-accent text-white py-4 rounded-xl font-black uppercase tracking-widest shadow-lg shadow-accent/20 hover:opacity-90 active:scale-95 disabled:opacity-50 transition-all"
+                    className="w-full pill-btn"
                   >
-                    {reviewLoading ? 'Bubbling...' : 'Post Story'}
+                    {reviewLoading ? 'Submitting...' : 'Post Review'}
                   </button>
-                  <p className="text-[10px] text-center text-muted uppercase tracking-widest leading-relaxed">
-                    Verified purchase protocol enforced.
+                  <p className="text-xs text-center text-[var(--muted)]">
+                    Only verified purchases can be reviewed.
                   </p>
                 </form>
               )}

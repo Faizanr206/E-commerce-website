@@ -58,8 +58,8 @@ const AdminDashboard = () => {
   return (
     <div className="py-10">
       <div className="mb-12">
-        <h1 className="text-4xl font-black uppercase tracking-tighter mb-2">Command Center</h1>
-        <p className="text-muted text-lg font-medium">Monitoring the LittleLegends adventure fleet.</p>
+        <h1 className="text-4xl font-extrabold tracking-tight mb-2">Command Center</h1>
+        <p className="text-[var(--muted)] text-lg font-medium">Monitoring the LittleLegends adventure fleet.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -69,13 +69,13 @@ const AdminDashboard = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: i * 0.1 }}
-            className="glass p-8 rounded-[2rem] border-glass-border relative overflow-hidden group hover:scale-[1.02] transition-all"
+            className="soft-card p-8 relative overflow-hidden group hover:scale-[1.02] transition-all"
           >
-            <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} w-fit mb-6 shadow-lg shadow-black/5`}>
+            <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} w-fit mb-6 shadow-sm`}>
               <stat.icon size={28} />
             </div>
-            <h3 className="text-sm font-black uppercase tracking-widest text-muted mb-1">{stat.label}</h3>
-            <p className="text-3xl font-black">{stat.value}</p>
+            <h3 className="text-sm font-bold text-[var(--muted)] mb-1">{stat.label}</h3>
+            <p className="text-3xl font-extrabold">{stat.value}</p>
             
             {/* Background Glow */}
             <div className={`absolute -bottom-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-10 group-hover:opacity-20 transition-opacity ${stat.bg.replace('/10', '/100')}`} />
@@ -84,13 +84,13 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass p-8 rounded-[2rem] border-glass-border">
+        <div className="lg:col-span-2 soft-card p-8">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
-              <TrendingUp className="text-accent" />
+            <h3 className="text-xl font-bold flex items-center gap-3">
+              <TrendingUp className="text-[var(--text)]" />
               Customer Growth
             </h3>
-            <span className="text-xs font-bold text-muted uppercase tracking-widest">Yearly Telemetry</span>
+            <span className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">Yearly Telemetry</span>
           </div>
           <div className="h-64 flex items-end gap-3 pb-4">
              {stats?.customerGrowth?.map((month, i) => (
@@ -110,17 +110,20 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-1 glass p-8 rounded-[2rem] border-glass-border flex flex-col">
-          <h3 className="text-xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
-            <Package className="text-accent" />
+        <div className="lg:col-span-1 soft-card p-8 flex flex-col">
+          <h3 className="text-xl font-bold mb-8 flex items-center gap-3">
+            <Package className="text-[var(--text)]" />
             Quick Actions
           </h3>
           <div className="flex flex-col gap-4 flex-1">
-            <Link to="/admin/products" className="w-full py-5 bg-accent text-white rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-accent/20 hover:opacity-90 active:scale-95 transition-all text-center">
-              Manage Toy Legends
+            <Link to="/admin/products" className="pill-btn w-full">
+              Manage Products
             </Link>
-            <Link to="/admin/orders" className="w-full py-5 glass border-glass-border rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-muted/10 active:scale-95 transition-all text-center">
+            <Link to="/admin/orders" className="w-full py-3.5 border-2 border-[var(--border-color)] rounded-full font-bold text-sm hover:border-[var(--text)] transition-all text-center">
               View All Orders
+            </Link>
+            <Link to="/admin/settings" className="w-full py-3.5 border-2 border-[var(--border-color)] rounded-full font-bold text-sm hover:border-[var(--text)] transition-all text-center mt-auto">
+              Site Settings
             </Link>
           </div>
         </div>

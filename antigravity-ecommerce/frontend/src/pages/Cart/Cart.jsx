@@ -3,12 +3,21 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../utils/api';
-import { Trash2, Plus, Minus, CreditCard, ChevronLeft } from 'lucide-react';
+import { Trash2, Plus, Minus, CreditCard, ChevronLeft, MapPin, AlertCircle } from 'lucide-react';
 
 const Cart = () => {
   const { cartItems, handleQuantityChange, removeFromCart, subtotal } = useCart();
   const { user } = useAuth();
+  
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState('cart'); // 'cart' or 'shipping'
+  const [shippingDetails, setShippingDetails] = useState({
+    address: user?.shippingAddress?.address || '',
+    city: user?.shippingAddress?.city || '',
+    postalCode: user?.shippingAddress?.postalCode || '',
+    country: user?.shippingAddress?.country || ''
+  });
+  const [error, setError] = useState(new URLSearchParams(window.location.search).get('canceled') ? 'Payment was cancelled or rejected. Please try again.' : '');
 
   const formattedPrice = (amount) =>
     new Intl.NumberFormat('en-PK', {
@@ -18,20 +27,21 @@ const Cart = () => {
     }).format(amount);
 
   const handleCheckout = async () => {
+    if (!shippingDetails.address || !shippingDetails.city || !shippingDetails.postalCode) {
+      setError('Please complete all shipping fields');
+      return;
+    }
+
     setLoading(true);
+    setError('');
     try {
       const { data } = await api.post('/checkout/create-session', {
         cartItems,
-        shippingDetails: {
-          address: '123 Space Way',
-          city: 'Karachi',
-          postalCode: '74200',
-          country: 'Pakistan',
-        },
+        shippingDetails,
       });
       window.location.href = data.url;
     } catch (err) {
-      alert(err.response?.data?.message || 'Checkout failed');
+      setError(err.response?.data?.message || 'Checkout failed');
     } finally {
       setLoading(false);
     }
@@ -60,10 +70,19 @@ const Cart = () => {
             </Link>
             
             <div className="flex-1 min-w-0">
-              <Link to={`/product/${item.product}`} className="text-xl font-bold truncate block hover:text-accent transition-colors">
+              <Link to={`/product/${item.product}`} className="text-xl font-bold truncate block hover:text-[var(--muted)] transition-colors">
                 {item.name}
               </Link>
-              <p className="text-accent font-black text-lg mt-1">{formattedPrice(item.price)}</p>
+              {item.selectedOptions && Object.keys(item.selectedOptions).length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {Object.entries(item.selectedOptions).map(([key, value]) => (
+                    <span key={key} className="text-xs font-semibold px-2 py-0.5 bg-[var(--text)] text-[var(--bg)] rounded-full">
+                      {key}: {value}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="font-extrabold text-lg mt-2 text-[var(--text)]">{formattedPrice(item.price)}</p>
             </div>
 
             <div className="flex items-center gap-3 bg-bg/50 px-3 py-2 rounded-xl border border-glass-border">
@@ -101,43 +120,97 @@ const Cart = () => {
       </div>
 
       <div className="lg:col-span-1">
-        <div className="glass p-8 rounded-3xl sticky top-24 flex flex-col gap-8">
-          <h3 className="text-2xl font-black uppercase tracking-tighter">Order Summary</h3>
+        <div className="soft-card p-8 sticky top-32 flex flex-col gap-8 border border-[var(--border-color)]">
           
-          <div className="space-y-4">
-            <div className="flex justify-between text-muted font-medium">
-              <span>Subtotal</span>
-              <span>{formattedPrice(subtotal)}</span>
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl text-sm flex gap-3 font-semibold">
+              <AlertCircle size={18} className="shrink-0" />
+              {error}
             </div>
-            <div className="flex justify-between text-muted font-medium">
-              <span>Delivery Fee (Shipping)</span>
-              <span className="text-green-500">FREE</span>
-            </div>
-            <div className="h-px bg-glass-border my-2" />
-            <div className="flex justify-between text-2xl font-black text-accent">
-              <span>Total</span>
-              <span>{formattedPrice(subtotal)}</span>
-            </div>
-          </div>
-
-          {!user ? (
-            <Link to="/login" className="w-full bg-accent text-white py-5 rounded-2xl font-bold uppercase tracking-widest text-center shadow-lg shadow-accent/20 hover:opacity-90 transition-all flex items-center justify-center gap-3">
-              Login to Checkout
-              <CreditCard size={20} />
-            </Link>
-          ) : (
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="w-full bg-accent text-white py-5 rounded-2xl font-bold uppercase tracking-widest shadow-lg shadow-accent/20 hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-3 active:scale-95"
-            >
-              {loading ? 'Securing Transaction...' : 'Confirm Adventure'}
-              <CreditCard size={20} />
-            </button>
           )}
 
-          <p className="text-xs text-center text-muted uppercase tracking-widest font-medium">
-            Secured by LittleLegends-Stripe Protocol
+          {step === 'cart' ? (
+            <>
+              <h3 className="text-2xl font-extrabold tracking-tight">Order Summary</h3>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between text-[var(--muted)] font-semibold">
+                  <span>Subtotal</span>
+                  <span>{formattedPrice(subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-[var(--muted)] font-semibold">
+                  <span>Delivery Fee</span>
+                  <span className="text-green-500 font-bold">FREE</span>
+                </div>
+                <div className="h-px bg-[var(--border-color)] my-2" />
+                <div className="flex justify-between text-2xl font-extrabold text-[var(--text)]">
+                  <span>Total</span>
+                  <span>{formattedPrice(subtotal)}</span>
+                </div>
+              </div>
+
+              {!user ? (
+                <Link to="/login" className="pill-btn w-full justify-center gap-3">
+                  Login to Checkout
+                  <CreditCard size={20} />
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setStep('shipping')}
+                  className="pill-btn w-full justify-center gap-3"
+                >
+                  Proceed to Secure Checkout
+                  <MapPin size={20} />
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <h3 className="text-xl font-extrabold flex items-center gap-2">
+                <button onClick={() => setStep('cart')} className="hover:text-[var(--muted)]"><ChevronLeft size={24} /></button>
+                Shipping Details
+              </h3>
+
+              <div className="space-y-4">
+                <input 
+                  type="text" placeholder="Street Address" required
+                  className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none text-sm font-medium"
+                  value={shippingDetails.address} onChange={e => setShippingDetails({...shippingDetails, address: e.target.value})}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <input 
+                    type="text" placeholder="City" required
+                    className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none text-sm font-medium"
+                    value={shippingDetails.city} onChange={e => setShippingDetails({...shippingDetails, city: e.target.value})}
+                  />
+                  <input 
+                    type="text" placeholder="Postal Code" required
+                    className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none text-sm font-medium"
+                    value={shippingDetails.postalCode} onChange={e => setShippingDetails({...shippingDetails, postalCode: e.target.value})}
+                  />
+                </div>
+                <input 
+                  type="text" placeholder="Country" required
+                  className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none text-sm font-medium"
+                  value={shippingDetails.country} onChange={e => setShippingDetails({...shippingDetails, country: e.target.value})}
+                />
+              </div>
+
+              <div className="h-px bg-[var(--border-color)] my-2" />
+
+              <button
+                onClick={handleCheckout}
+                disabled={loading}
+                className="pill-btn w-full justify-center gap-3 bg-[var(--text)] text-[var(--bg)]"
+              >
+                {loading ? 'Processing Payment...' : `Pay ${formattedPrice(subtotal)}`}
+                <CreditCard size={20} />
+              </button>
+            </>
+          )}
+
+          <p className="text-xs text-center text-[var(--muted)] font-semibold uppercase tracking-wider">
+            Secured by SSL • Power Checkout
           </p>
         </div>
       </div>

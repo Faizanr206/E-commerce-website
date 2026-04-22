@@ -9,10 +9,12 @@ import Signup from './pages/Auth/Signup';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminProducts from './pages/Admin/AdminProducts';
 import AdminOrders from './pages/Admin/AdminOrders';
+import AdminSettings from './pages/Admin/AdminSettings';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 import Profile from './pages/Profile/Profile';
 import Shop from './pages/Shop/Shop';
+import About from './pages/About/About';
 import { useAuth } from './context/AuthContext';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
@@ -48,6 +50,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/product/:id" element={<ProductDetail />} />
@@ -77,6 +80,12 @@ function App() {
         <Route path="/admin/orders" element={
           <ProtectedRoute adminOnly>
             <AdminOrders />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/settings" element={
+          <ProtectedRoute adminOnly>
+            <AdminSettings />
           </ProtectedRoute>
         } />
 

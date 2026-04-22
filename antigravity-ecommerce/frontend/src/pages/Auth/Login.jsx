@@ -30,13 +30,13 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto py-20 px-6 glass rounded-2xl animate-float-slow">
-      <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-accent to-brand-primary bg-clip-text text-transparent">
+    <div className="max-w-md mx-auto py-24 px-6 md:px-12 soft-card rounded-3xl border border-[var(--border-color)]">
+      <h2 className="text-3xl font-extrabold tracking-tight text-center mb-8 text-[var(--text)]">
         Welcome Back
       </h2>
       
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 text-red-500 text-sm">
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-500 text-sm font-semibold">
           <AlertCircle size={18} />
           {error}
         </div>
@@ -44,13 +44,13 @@ const Login = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium mb-2 text-muted uppercase tracking-wider">Email</label>
+          <label className="block text-sm font-semibold mb-2 text-[var(--text)]">Email Address</label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={18} />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} />
             <input
               type="email"
               required
-              className="w-full bg-bg/50 border border-glass-border rounded-xl px-10 py-3 focus:ring-2 focus:ring-accent outline-none transition-all"
+              className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-12 py-3 focus:ring-2 focus:ring-[var(--text)] outline-none transition-all placeholder:text-[var(--muted)]"
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -59,13 +59,13 @@ const Login = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2 text-muted uppercase tracking-wider">Password</label>
+           <label className="block text-sm font-semibold mb-2 text-[var(--text)]">Password</label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={18} />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} />
             <input
               type="password"
               required
-              className="w-full bg-bg/50 border border-glass-border rounded-xl px-10 py-3 focus:ring-2 focus:ring-accent outline-none transition-all"
+              className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-12 py-3 focus:ring-2 focus:ring-[var(--text)] outline-none transition-all placeholder:text-[var(--muted)]"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -74,7 +74,7 @@ const Login = () => {
           <div className="mt-2 text-right">
             <Link 
               to="/forgot-password" 
-              className="text-[10px] font-black uppercase tracking-widest text-muted hover:text-accent transition-colors"
+              className="text-xs font-semibold text-[var(--muted)] hover:text-[var(--text)] underline-offset-2 hover:underline transition-colors"
             >
               Forgot Password?
             </Link>
@@ -84,16 +84,16 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-accent text-white py-4 rounded-xl font-bold font-black uppercase tracking-[0.2em] shadow-lg shadow-accent/20 hover:opacity-90 active:scale-95 disabled:opacity-50 transition-all"
+          className="w-full pill-btn"
         >
-          {loading ? 'Starting Adventure...' : 'Enter LittleLegends'}
+          {loading ? 'Please wait...' : 'Sign In'}
         </button>
       </form>
 
-      <p className="mt-8 text-center text-muted font-medium uppercase tracking-widest text-[10px]">
-        New LittleLegend?{' '}
-        <Link to="/signup" className="text-accent font-semibold hover:underline">
-          Create Account
+      <p className="mt-8 text-center text-[var(--muted)] font-medium text-sm">
+        Don't have an account?{' '}
+        <Link to="/signup" className="text-[var(--text)] font-bold decoration-2 underline-offset-4 hover:underline">
+          Sign up
         </Link>
       </p>
     </div>

@@ -56,7 +56,7 @@ const Profile = () => {
   // Guard: don't render if user is not loaded yet
   if (!user) {
     return (
-      <div className="py-20 text-center animate-pulse uppercase tracking-[0.2em] text-muted">
+      <div className="py-24 text-center text-[var(--muted)] font-semibold">
         Loading Profile...
       </div>
     );
@@ -122,67 +122,67 @@ const Profile = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-12 px-4">
+    <div className="max-w-6xl mx-auto py-24 px-6 md:px-12">
       {/* Header Profile Section */}
-      <div className="glass rounded-3xl p-8 mb-8 flex flex-col md:flex-row items-center gap-8 animate-fade-in">
-        <div className="relative group">
-          <div className="w-32 h-32 rounded-full overflow-hidden bg-bg/50 border-4 border-accent shadow-xl group-hover:opacity-90 transition-opacity">
+      <div className="soft-card p-10 mb-12 flex flex-col md:flex-row items-center gap-8 border border-[var(--border-color)]">
+        <div className="relative group shrink-0">
+          <div className="w-32 h-32 rounded-full overflow-hidden bg-[var(--bg)] border-4 border-[var(--border-color)] shadow-sm">
             {profilePicture ? (
               <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted">
-                <UserIcon size={48} />
+              <div className="w-full h-full flex items-center justify-center text-[var(--muted)]">
+                <UserIcon size={48} strokeWidth={1.5} />
               </div>
             )}
           </div>
-          <label className="absolute bottom-0 right-0 p-2 bg-accent text-white rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform active:scale-95">
+          <label className="absolute bottom-0 right-0 p-2.5 bg-[var(--text)] text-[var(--bg)] rounded-full cursor-pointer shadow-md hover:scale-105 transition-transform">
             {uploading ? <Loader2 className="animate-spin" size={18} /> : <Camera size={18} />}
             <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
           </label>
         </div>
         
         <div className="text-center md:text-left">
-          <h1 className="text-4xl font-black uppercase tracking-tighter mb-2 italic">
-            Legend: <span className="text-accent">{user?.name}</span>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-3">
+            {user?.name}
           </h1>
-          <div className="flex flex-wrap justify-center md:justify-start gap-4">
-            <span className="px-4 py-1.5 glass rounded-full text-xs font-bold uppercase tracking-widest text-accent">
-              {user?.role === 'admin' ? 'Strategic Commander' : 'Active Pioneer'}
+          <div className="flex flex-wrap justify-center md:justify-start gap-3">
+            <span className="px-4 py-1.5 rounded-full text-xs font-bold border border-[var(--border-color)] bg-[var(--bg)] text-[var(--text)]">
+              {user?.role === 'admin' ? 'Admin / Manager' : 'Customer'}
             </span>
-            <span className="px-4 py-1.5 glass rounded-full text-xs font-medium text-muted">
+            <span className="px-4 py-1.5 rounded-full text-xs font-semibold text-[var(--muted)]">
               Member since {user?.createdAt ? new Date(user.createdAt).getFullYear() : '2025'}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
         {/* Navigation Sidebar */}
-        <div className="lg:col-span-1 space-y-2">
+        <div className="lg:col-span-1 flex flex-col gap-2">
           <button 
             onClick={() => setActiveTab('personal')}
-            className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all ${activeTab === 'personal' ? 'bg-accent text-white shadow-lg shadow-accent/20 translate-x-2' : 'hover:bg-muted/10 text-muted'}`}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl font-semibold text-sm transition-all ${activeTab === 'personal' ? 'bg-[var(--text)] text-[var(--bg)] shadow-md translate-x-1' : 'hover:bg-[var(--border-color)] text-[var(--text)]'}`}
           >
             <UserIcon size={18} /> Personal Info
           </button>
           <button 
             onClick={() => setActiveTab('shipping')}
-            className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all ${activeTab === 'shipping' ? 'bg-accent text-white shadow-lg shadow-accent/20 translate-x-2' : 'hover:bg-muted/10 text-muted'}`}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl font-semibold text-sm transition-all ${activeTab === 'shipping' ? 'bg-[var(--text)] text-[var(--bg)] shadow-md translate-x-1' : 'hover:bg-[var(--border-color)] text-[var(--text)]'}`}
           >
-            <MapPin size={18} /> Shipping Base
+            <MapPin size={18} /> Shipping Methods
           </button>
           <button 
             onClick={() => setActiveTab('cart')}
-            className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all ${activeTab === 'cart' ? 'bg-accent text-white shadow-lg shadow-accent/20 translate-x-2' : 'hover:bg-muted/10 text-muted'}`}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl font-semibold text-sm transition-all ${activeTab === 'cart' ? 'bg-[var(--text)] text-[var(--bg)] shadow-md translate-x-1' : 'hover:bg-[var(--border-color)] text-[var(--text)]'}`}
           >
-            <ShoppingBag size={18} /> Artifacts (Cart)
-            {totalItems > 0 && <span className="ml-auto bg-brand-primary text-white px-2 py-0.5 rounded-full text-[10px]">{totalItems}</span>}
+            <ShoppingBag size={18} /> Active Cart
+            {totalItems > 0 && <span className={`ml-auto px-2py-0.5 rounded-full text-[10px] ${activeTab === 'cart' ? 'bg-[var(--bg)] text-[var(--text)]' : 'bg-[var(--text)] text-[var(--bg)]'}`}>{totalItems}</span>}
           </button>
         </div>
 
         {/* Content Area */}
         <div className="lg:col-span-3">
-          <div className="glass rounded-3xl p-8 min-h-[500px]">
+          <div className="soft-card rounded-2xl p-8 lg:p-10 min-h-[500px]">
             {error && (
               <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center gap-3 text-red-500 text-sm animate-shake">
                 <AlertCircle size={18} /> {error}
@@ -198,31 +198,29 @@ const Profile = () => {
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">Full Name</label>
-                    <div className="relative">
-                      <input 
-                        type="text" 
-                        className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    </div>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">Full Name</label>
+                    <input 
+                      type="text" 
+                      className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--text)] transition-all"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">Email Address</label>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">Email Address</label>
                     <input 
                       type="email" 
-                      className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all opacity-70"
+                      className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none opacity-60"
                       value={email}
                       disabled
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">New Password (leave blank to keep current)</label>
+                  <label className="block text-sm font-semibold text-[var(--text)] mb-2">New Password <span className="text-xs font-normal text-[var(--muted)]">(leave blank to keep current)</span></label>
                   <input 
                     type="password" 
-                    className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all"
+                    className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--text)] transition-all"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -231,9 +229,10 @@ const Profile = () => {
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="flex items-center gap-2 bg-accent text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                  className="pill-btn mt-4 w-full sm:w-auto"
                 >
-                  {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />} Update Personal Telemetry
+                  {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />} 
+                  <span className="ml-2">Save Profile Changes</span>
                 </button>
               </form>
             )}
@@ -241,43 +240,43 @@ const Profile = () => {
             {activeTab === 'shipping' && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">Street Address</label>
+                  <label className="block text-sm font-semibold text-[var(--text)] mb-2">Street Address</label>
                   <input 
                     type="text" 
                     name="address"
-                    className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all"
-                    placeholder="123 Legend Way"
+                    className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--text)] transition-all"
+                    placeholder="123 Example Blvd"
                     value={shippingAddress.address}
                     onChange={handleShippingChange}
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">City</label>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">City</label>
                     <input 
                       type="text" 
                       name="city"
-                      className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all"
+                      className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--text)] transition-all"
                       value={shippingAddress.city}
                       onChange={handleShippingChange}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">Postal Code</label>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">Postal Code</label>
                     <input 
                       type="text" 
                       name="postalCode"
-                      className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all"
+                      className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--text)] transition-all"
                       value={shippingAddress.postalCode}
                       onChange={handleShippingChange}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-2 ml-1">Country</label>
+                    <label className="block text-sm font-semibold text-[var(--text)] mb-2">Country</label>
                     <input 
                       type="text" 
                       name="country"
-                      className="w-full bg-bg/50 border border-glass-border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-accent transition-all"
+                      className="w-full bg-[var(--bg)] border border-[var(--border-color)] rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--text)] transition-all"
                       value={shippingAddress.country}
                       onChange={handleShippingChange}
                     />
@@ -286,44 +285,45 @@ const Profile = () => {
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="flex items-center gap-2 bg-accent text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                  className="pill-btn mt-4 w-full sm:w-auto"
                 >
-                  {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />} Secure Shipping Base
+                  {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />} 
+                  <span className="ml-2">Save Shipping Info</span>
                 </button>
               </form>
             )}
 
             {activeTab === 'cart' && (
               <div className="space-y-6">
-                <div className="flex justify-between items-end mb-8 border-b border-glass-border pb-4">
-                  <h3 className="text-xl font-black uppercase tracking-tighter italic">Staged Artifacts</h3>
+                <div className="flex justify-between items-end mb-8 border-b border-[var(--border-color)] pb-4">
+                  <h3 className="text-2xl font-bold tracking-tight">Your Cart</h3>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted">Subtotal</p>
-                    <p className="text-2xl font-black text-accent">${subtotal.toFixed(2)}</p>
+                    <p className="text-sm font-semibold text-[var(--muted)]">Subtotal</p>
+                    <p className="text-2xl font-extrabold text-[var(--text)]">${subtotal.toFixed(2)}</p>
                   </div>
                 </div>
 
                 {cartItems.length === 0 ? (
                   <div className="py-20 text-center space-y-4">
-                    <ShoppingBag size={48} className="mx-auto text-muted/20" />
-                    <p className="text-muted uppercase tracking-widest font-bold">No artifacts in vault</p>
+                    <ShoppingBag size={48} className="mx-auto text-[var(--muted)] opacity-20" />
+                    <p className="text-[var(--muted)] font-semibold text-lg">Your cart is currently empty.</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {cartItems.map((item) => (
-                      <div key={item.product + JSON.stringify(item.selectedOptions)} className="glass rounded-2xl p-4 flex items-center gap-4 group">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-bg/50 border border-glass-border">
+                      <div key={item.product + JSON.stringify(item.selectedOptions)} className="border border-[var(--border-color)] bg-[var(--bg)] rounded-2xl p-4 flex items-center gap-6 group hover:border-[var(--text)] transition-colors">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-[var(--bg)] border border-[var(--border-color)]">
                           <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-bold uppercase tracking-wider text-sm">{item.name}</h4>
-                          <p className="text-xs text-muted">Qty: {item.qty} • ${item.price}</p>
+                          <h4 className="font-bold text-lg text-[var(--text)]">{item.name}</h4>
+                          <p className="text-sm text-[var(--muted)] mt-1">Quantity: {item.qty} • ${item.price}</p>
                         </div>
                         <button 
                           onClick={() => removeFromCart(item.product)}
-                          className="p-2 text-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-3 text-[var(--muted)] hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors opacity-100 md:opacity-0 group-hover:opacity-100"
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={20} />
                         </button>
                       </div>
                     ))}

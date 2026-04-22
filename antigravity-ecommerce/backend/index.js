@@ -10,6 +10,7 @@ const productRoutes = require('./src/routes/productRoutes');
 const orderRoutes = require('./src/routes/orderRoutes');
 const uploadRoutes = require('./src/routes/uploadRoutes');
 const cartRoutes = require('./src/routes/cartRoutes');
+const settingRoutes = require('./src/routes/settingRoutes');
 
 connectDB();
 
@@ -47,6 +48,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/checkout', orderRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/settings', settingRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

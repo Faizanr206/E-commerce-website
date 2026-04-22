@@ -37,12 +37,19 @@ const createCheckoutSession = async (req, res, next) => {
     );
 
     // 2. Create Stripe Session
+    // [DEVELOPMENT MOCK MODE] Bypass Stripe if placeholder config is used
+    if (process.env.STRIPE_SECRET_KEY === 'sk_test_placeholder') {
+      console.log('[MOCK MODE] Simulating Stripe Session Creation...');
+      const mockSessionId = `mock_session_${Date.now()}`;
+      return res.json({ url: `${process.env.FRONTEND_URL}/success?session_id=${mockSessionId}` });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/cart`,
+      cancel_url: `${process.env.FRONTEND_URL}/cart?canceled=true`,
       metadata: {
         userId: req.user._id.toString(),
         shippingAddress: JSON.stringify(shippingDetails),
@@ -61,6 +68,37 @@ const createCheckoutSession = async (req, res, next) => {
 const confirmOrderPayment = async (req, res, next) => {
   try {
     const { sessionId } = req.body;
+    
+    // [DEVELOPMENT MOCK MODE] Bypass Stripe if placeholder config is used
+    if (process.env.STRIPE_SECRET_KEY === 'sk_test_placeholder' && sessionId.startsWith('mock_session_')) {
+      console.log('[MOCK MODE] Simulating Stripe Validation for:', sessionId);
+      
+      const orderExists = await Order.findOne({ 'paymentResult.id': sessionId });
+      if (orderExists) return res.json(orderExists);
+
+      const itemsPrice = req.body.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      
+      const order = new Order({
+        user: req.user._id,
+        orderItems: req.body.cartItems,
+        shippingAddress: req.body.shippingDetails || {}, // Using passed info for mock
+        paymentMethod: 'Mock Stripe (Dev)',
+        paymentResult: {
+          id: sessionId,
+          status: 'paid',
+          email_address: req.user.email,
+        },
+        itemsPrice,
+        totalPrice: itemsPrice,
+        isPaid: true,
+        paidAt: Date.now(),
+      });
+
+      const createdOrder = await order.save();
+      return res.status(201).json(createdOrder);
+    }
+
+    // Normal Stripe Validation
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === 'paid') {
@@ -69,18 +107,6 @@ const confirmOrderPayment = async (req, res, next) => {
       if (orderExists) {
         return res.json(orderExists);
       }
-
-      // 2. Extract line items from Stripe session (or map from metadata)
-      const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
-      
-      const orderItems = lineItems.data.map((item) => ({
-        name: item.description,
-        qty: item.quantity,
-        price: item.amount_total / 100,
-        // Needs a way to map back to product IDs if not stored in metadata
-        // For simplicity, we'll assume the client sends the cartItems again for DB storage
-        // but validates it against the session.
-      }));
 
       // In a real app, use Webhooks for more reliability.
       // Here we trust the verified session.
