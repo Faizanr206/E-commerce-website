@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #fb7185; /* Soft Rose */
+  --color-brand-secondary: #f472b6; /* Pink */
+  --color-brand-accent: #60a5fa; /* Baby Blue */
+  --color-accent: #fb7185; /* Consistent Rose Accent */
+  
+  --color-dark-bg: #020617;
+  --color-dark-text: #f1f5f9;
+  --color-dark-muted: #94a3b8;
+  
+  --color-light-bg: #ffffff;
+  --color-light-text: #0f172a;
+  --color-light-muted: #64748b;
+}
+
+:root {
+  --bg: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #fb7185;
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+  --gradient-from: #000000;
+  --gradient-via: #334155;
+  --gradient-to: #000000;
+}
+
+.dark {
+  --bg: #020617;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #fb7185;
+  --glass: rgba(11, 14, 20, 0.7);
+  --glass-border: rgba(251, 113, 133, 0.15);
+  --shadow: 0 10px 30px -10px rgba(251, 113, 133, 0.1);
+  --shadow-hover: 0 20px 40px -15px rgba(251, 113, 133, 0.2);
+  --gradient-from: #fb7185;
+  --gradient-via: #f472b6;
+  --gradient-to: #fb7185;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism Utility */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.glass:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Antigravity Floating Animation */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float 2s ease-in-out infinite;
+}
+
+/* Base Styles */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold tracking-tight;
+}
+
+button {
+  @apply transition-all active:scale-95;
+}
+
+/* Modern Scrollbar Design */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+  border: 4px solid transparent;
+  background-clip: padding-box;
+  opacity: 0.5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-secondary);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
